@@ -165,7 +165,14 @@ def dir_mat(path):
 SIZE_UNIT_K = 1024
 SIZE_UNIT_M = SIZE_UNIT_K ** 2
 SIZE_UNIT_G = SIZE_UNIT_K ** 3
+unit_dict = {"M" :  SIZE_UNIT_M, "K" : SIZE_UNIT_K, "G" : SIZE_UNIT_G}
 def get_file_size(path, unit = SIZE_UNIT_K):
+    if type(unit) == str:
+        import util
+        try:
+            unit = unit_dict[util.str.to_uppercase(unit)[0]]
+        except:
+            util.log.error("Unkown filesize unit: " + unit)
     size = os.path.getsize(get_absolute_path(path))
     return size * 1.0 / unit
     
@@ -225,7 +232,10 @@ def search(pattern, path, file_only = True):
     return targets
 
 def dump_json(path, data):
-    import ujson as json
+    try:
+        import ujson as json
+    except:
+        import json
     path = get_absolute_path(path)
     make_parent_dir(path)
 
@@ -234,7 +244,10 @@ def dump_json(path, data):
     return path
 
 def load_json(path):
-    import ujson as json
+    try: 
+        import ujson as json
+    except:
+        import json
     path = get_absolute_path(path)
     with open(path, 'r')  as f:
         return json.load(f)
